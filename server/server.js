@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors')
 const SpotifyWebApi = require("spotify-web-api-node");
+const lyricsFinder = require('lyrics-finder')
+require('dotenv').config()
 
 const app=express();
 app.use(cors())
@@ -11,8 +13,8 @@ app.post("/refresh",(req,res)=>{
     console.log("Hi")
     const spotifyApi = new SpotifyWebApi({
         redirectUri:"http://localhost:3000",
-        clientId:"51ce5ef38f294a3da14e48aeaefcbc64",
-        clientSecret:"5adeb782ad524e6ba014ff45665714dd",
+        clientId : process.env.clientID,
+        clientSecret: process.env.clientSecret,
         refreshToken
     });
 
@@ -32,8 +34,8 @@ app.post("/login",(req,res)=>{
     const code = req.body.code
     const spotifyAPI = new SpotifyWebApi({
         redirectUri:"http://localhost:3000",
-        clientId:"51ce5ef38f294a3da14e48aeaefcbc64",
-        clientSecret:"5adeb782ad524e6ba014ff45665714dd"
+        clientId : process.env.clientID,
+        clientSecret : process.env.clientSecret
     })
     
     spotifyAPI.authorizationCodeGrant(code)
@@ -50,6 +52,11 @@ app.post("/login",(req,res)=>{
     })
 });
 
+app.post("/lyrics", async (req,res)=>{
+    const lyrics = await lyricsFinder(req.body.artist,req.body.track) || 'No Lyrics Found'
+    console.log(lyrics)
+    res.send(lyrics);
+})
 app.listen(4000,()=>{
     console.log("Listening on port 4000")
 })
