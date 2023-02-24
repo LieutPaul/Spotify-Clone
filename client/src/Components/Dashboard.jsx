@@ -7,7 +7,7 @@ import axios from 'axios'
 import 'react-jinke-music-player/assets/index.css'
 
 const spotifyAPI = new SpotifyWebApi({
-    clientId: "51ce5ef38f294a3da14e48aeaefcbc64"
+    clientId: process.env.clientId
 })
 
 export default function Dashboard({code}) {
